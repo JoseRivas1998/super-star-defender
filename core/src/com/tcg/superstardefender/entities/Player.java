@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
+import com.tcg.superstardefender.Game;
 import com.tcg.superstardefender.MyCamera;
 import com.tcg.superstardefender.MyConstants;
 import com.tcg.superstardefender.managers.MyInput;
@@ -13,7 +15,7 @@ import com.tcg.superstardefender.managers.MyInput;
 public class Player extends Entity {
 
 	private Rectangle ls, rs, ts, bs;
-	private boolean touchingG, pTouchingG;
+	private boolean touchingG;
 	
 	private Animation l, r, il, ir;
 	private float stateTime;
@@ -21,6 +23,8 @@ public class Player extends Entity {
 	private int dir;
 	
 	private Texture wltemp, wrtemp, irtemp, iltemp;
+	
+	private Array<Bullet> bullets;
 	
 	private boolean alive;
 
@@ -32,6 +36,7 @@ public class Player extends Entity {
 		ts = new Rectangle();
 		bs = new Rectangle();
 		dir = MyConstants.RIGHT;
+		bullets = new Array<Bullet>();
 		alive = true;
 		initializeAnimations();
 	}
@@ -78,7 +83,14 @@ public class Player extends Entity {
 		if(touchingG) {
 			vel.y = 0;
 			if(MyInput.keyPressed(MyInput.JUMP)) {
+				Game.res.getSound("jump").play(.5f);
 				vel.y = 17.5f;
+			}
+		}
+		if(MyInput.keyPressed(MyInput.SHOOT)) {
+			if(bullets.size < 10) {
+				//TODO play sound
+				bullets.add(new Bullet(dir, getPosition()));
 			}
 		}
 	}
@@ -108,7 +120,22 @@ public class Player extends Entity {
 		collisions(w);
 		resetBounds();
 		
-		pTouchingG = touchingG;
+		updateBullets(w, cam);
+	}
+	
+	private void updateBullets(World w, MyCamera cam) {
+		for(Bullet b : bullets) {
+			b.update();
+			for(Rectangle r : w.getBounds()) {
+				if(b.collidingWith(r)) {
+					bullets.removeValue(b, true);
+					return;
+				}
+			}
+			if(!cam.inView(b.getCenter())) {
+				bullets.removeValue(b, true);
+			}
+		}
 	}
 	
 	private void resetBounds() {
@@ -134,7 +161,7 @@ public class Player extends Entity {
 	private void collisionGround(World w) {
 		for(Rectangle r : w.getBounds()) {
 			if(bs.overlaps(r)) {
-				bounds.y = r.y + r.height - 4;
+				bounds.y = r.y + r.height - 8;
 				touchingG = true;
 				break;
 			} else {
@@ -175,7 +202,7 @@ public class Player extends Entity {
 	private void collisions(World w) {
 		collisionGround(w);
 		
-//		collisionGround(w, tutorial); TODO after enemie collision
+//		collisionGround(w, tutorial); TODO after enemy collision
 	}
 	
 	@Override
@@ -201,6 +228,12 @@ public class Player extends Entity {
 		
 		sb.draw(currentFrame, getX(), getY());
 		
+	}
+	
+	public void drawBullets(ShapeRenderer sr, SpriteBatch sb, float dt) {
+		for(Bullet b : bullets) {
+			b.draw(sr, sb, dt);
+		}
 	}
 
 	@Override

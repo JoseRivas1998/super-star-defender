@@ -89,6 +89,11 @@ public class PlayState extends GameState {
 		p.draw(sr, sb, dt);
 		sb.end();
 		
+		sr.begin(ShapeType.Filled);
+		sr.setProjectionMatrix(cam.combined);
+		p.drawBullets(sr, sb, dt);
+		sr.end();
+		
 	}
 
 	@Override

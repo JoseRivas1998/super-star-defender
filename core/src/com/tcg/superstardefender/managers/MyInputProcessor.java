@@ -40,7 +40,7 @@ public class MyInputProcessor extends InputAdapter {
 			MyInput.setKey(false, MyInput.JUMP);
 		}
 		if(keycode == Keys.X || keycode == Keys.M) {
-			MyInput.setKey(false, MyInput.JUMP);
+			MyInput.setKey(false, MyInput.SHOOT);
 		}
 		if(keycode == Keys.ENTER) {
 			MyInput.setKey(false, MyInput.START);

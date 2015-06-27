@@ -69,9 +69,11 @@ public class TitleState extends GameState {
 		}
 		if(MyInput.keyPressed(MyInput.LEFT)) {
 			currentItem--;
+			Game.res.getSound("select").play(.5f);
 		}
 		if(MyInput.keyPressed(MyInput.RIGHT)) {
 			currentItem++;
+			Game.res.getSound("select").play(.5f);
 		}
 		if(MyInput.keyPressed(MyInput.START) || MyInput.keyPressed(MyInput.JUMP)) {
 			select();
