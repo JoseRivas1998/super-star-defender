@@ -1,5 +1,6 @@
 package com.tcg.superstardefender.gamestates;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -24,6 +25,12 @@ public class PlayState extends GameState {
 	private Array<Star> stars;
 	
 	private Player p;
+	
+	private int score;
+	
+	private boolean gop;
+	
+	private float gameOverTime, gameOverTimer;
 
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
@@ -50,7 +57,14 @@ public class PlayState extends GameState {
 		
 		p = new Player();
 		
-		Game.res.getMusic("level0").play();
+		gameOverTime = 0;
+		gameOverTimer = 7.911f;
+		
+		gop = false;
+		
+		score = 0;
+		
+		Game.res.getMusic("level" + Game.level).play();
 
 	}
 
@@ -69,6 +83,24 @@ public class PlayState extends GameState {
 		
 		for(Star s: stars) {
 			s.update(cam.viewportWidth, cam.viewportHeight);
+		}
+		
+		if(score > Game.highscore[Game.level]) {
+			Game.highscore[Game.level] = score;
+		}
+		
+		if(!p.isAlive()) {
+			if(!gop) {
+				Game.res.getMusic("level" + Game.level).stop();
+				//TODO play game over sound
+				Gdx.input.vibrate(700);
+				gop = true;
+			} 
+			gameOverTime += dt;
+			if(gameOverTime > gameOverTimer) {
+				gameOverTime = 0;
+				gsm.setState(States.LEVELSELECT, true);
+			}
 		}
 	}
 

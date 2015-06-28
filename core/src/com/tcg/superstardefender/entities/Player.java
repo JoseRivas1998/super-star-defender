@@ -96,30 +96,27 @@ public class Player extends Entity {
 	}
 
 	public void update(World w, MyCamera cam) {
-		bounds.width = 32;
-		bounds.height = 48;
-		
-		if(!touchingG && vel.y > -10) {
-			vel.y--;
+		if(alive) {
+			bounds.width = 32;
+			bounds.height = 48;
+			
+			if(!touchingG && vel.y > -10) {
+				vel.y--;
+			}
+			
+			bounds.x += vel.x;
+			bounds.y += vel.y;
+			
+			bounds.y = MyConstants.clamp(bounds.y, -1000, MyConstants.WORLD_HEIGHT); //TODO min will be -1000 so that the death can process
+			
+			if(getTop() < -500) { //TODO enemy collision
+				alive = false;
+			}
+			
+			resetBounds();
+			collisions(w);
+			resetBounds();
 		}
-		
-		bounds.x += vel.x;
-		bounds.y += vel.y;
-		
-		bounds.y = MyConstants.clamp(bounds.y, 0, MyConstants.WORLD_HEIGHT); //TODO min will be -1000 so that the death can process
-		
-		if(bounds.y == 0) {
-			setPosition(384, 256);
-		}
-		
-		if(getTop() < -500) { //TODO enemy collision
-			alive = false;
-		}
-		
-		resetBounds();
-		collisions(w);
-		resetBounds();
-		
 		updateBullets(w, cam);
 	}
 	
@@ -226,7 +223,7 @@ public class Player extends Entity {
 			}
 		}
 		
-		sb.draw(currentFrame, getX(), getY());
+		if(alive) sb.draw(currentFrame, getX(), getY());
 		
 	}
 	
