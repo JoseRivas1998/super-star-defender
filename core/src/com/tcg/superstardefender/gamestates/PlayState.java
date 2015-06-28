@@ -58,7 +58,7 @@ public class PlayState extends GameState {
 		p = new Player();
 		
 		gameOverTime = 0;
-		gameOverTimer = 7.911f;
+		gameOverTimer = 7.818f;
 		
 		gop = false;
 		
@@ -92,7 +92,7 @@ public class PlayState extends GameState {
 		if(!p.isAlive()) {
 			if(!gop) {
 				Game.res.getMusic("level" + Game.level).stop();
-				//TODO play game over sound
+				Game.res.getMusic("gameover").play();
 				Gdx.input.vibrate(700);
 				gop = true;
 			} 

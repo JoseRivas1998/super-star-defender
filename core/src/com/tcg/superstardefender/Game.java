@@ -88,6 +88,8 @@ public class Game extends ApplicationAdapter {
 		res.loadMusic("music", "title.mp3", "title", true);
 		res.loadMusic("music", "credits.mp3", "credits", true);
 		res.loadMusic("music", "levelselect.mp3", "levelselect", true);
+		res.loadMusic("music", "gameover.mp3", "gameover", false);
+		
 		res.loadMusic("music", "level0.mp3", "level0", true);
 
 		res.loadSound("sound", "buzzer.mp3", "buzzer");
@@ -127,8 +129,6 @@ public class Game extends ApplicationAdapter {
 		}
 		
 		Gdx.graphics.setTitle(Game.TITLE + " | " + Game.fps + " fps");
-		
-		ftime += dt;
 		
 		MyInput.update();
 	}

@@ -103,8 +103,8 @@ public class GameStateManager {
 		
 		left.width = 75;
 		right.width = 75;
-		shoot.width = 50;
-		jump.width = 50;
+		shoot.width = 75;
+		jump.width = 75;
 		start.width = 75;
 
 		leftSt.width = Game.res.getWidth("small", "Left", 0, Align.bottomLeft, false);
@@ -121,8 +121,8 @@ public class GameStateManager {
 		
 		left.height = 50;
 		right.height = 50;
-		shoot.height = 50;
-		jump.height = 50;
+		shoot.height = 75;
+		jump.height = 75;
 		start.height = 50;
 		
 		start.x = 10;
@@ -204,11 +204,11 @@ public class GameStateManager {
 	    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 	    sr.begin(ShapeType.Filled);
 	    sr.setProjectionMatrix(cam.combined);
-	    sr.setColor(MyConstants.rgba(255, 0, 0, 128));
+	    sr.setColor(MyConstants.rgba(255, 0, 0, 168));
 	    sr.ellipse((shoot.x - (shoot.width * .5f)), (shoot.y - (shoot.height * .5f)), shoot.width, shoot.height);
-	    sr.setColor(MyConstants.rgba(0, 255, 0, 128));
+	    sr.setColor(MyConstants.rgba(0, 128, 0, 168));
 	    sr.ellipse((jump.x - (jump.width * .5f)), (jump.y - (jump.height * .5f)), jump.width, jump.height);
-	    sr.setColor(MyConstants.rgba(128, 128, 128, 128));
+	    sr.setColor(MyConstants.rgba(128, 128, 128, 168));
 	    sr.rect(start.x, start.y, start.width, start.height);
 	    sr.rect(left.x, left.y, left.width, left.height);
 	    sr.rect(right.x, right.y, right.width, right.height);

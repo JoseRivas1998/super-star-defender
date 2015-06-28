@@ -71,26 +71,28 @@ public class Player extends Entity {
 	}
 	
 	public void handleInput() {
-		if(MyInput.keyDown(MyInput.LEFT)) {
-			vel.x = -5;
-			dir = MyConstants.LEFT;
-		} else if(MyInput.keyDown(MyInput.RIGHT)) {
-			vel.x = 5;
-			dir = MyConstants.RIGHT;
-		} else {
-			vel.x = 0;
-		}
-		if(touchingG) {
-			vel.y = 0;
-			if(MyInput.keyPressed(MyInput.JUMP)) {
-				Game.res.getSound("jump").play(.5f);
-				vel.y = 17.5f;
+		if(alive) {
+			if(MyInput.keyDown(MyInput.LEFT)) {
+				vel.x = -5;
+				dir = MyConstants.LEFT;
+			} else if(MyInput.keyDown(MyInput.RIGHT)) {
+				vel.x = 5;
+				dir = MyConstants.RIGHT;
+			} else {
+				vel.x = 0;
 			}
-		}
-		if(MyInput.keyPressed(MyInput.SHOOT)) {
-			if(bullets.size < 10) {
-				//TODO play sound
-				bullets.add(new Bullet(dir, getPosition()));
+			if(touchingG) {
+				vel.y = 0;
+				if(MyInput.keyPressed(MyInput.JUMP)) {
+					Game.res.getSound("jump").play(.5f);
+					vel.y = 17.5f;
+				}
+			}
+			if(MyInput.keyPressed(MyInput.SHOOT)) {
+				if(bullets.size < 10) {
+					//TODO play sound
+					bullets.add(new Bullet(dir, getPosition()));
+				}
 			}
 		}
 	}
@@ -107,9 +109,9 @@ public class Player extends Entity {
 			bounds.x += vel.x;
 			bounds.y += vel.y;
 			
-			bounds.y = MyConstants.clamp(bounds.y, -1000, MyConstants.WORLD_HEIGHT); //TODO min will be -1000 so that the death can process
+			bounds.y = MyConstants.clamp(bounds.y, -500, MyConstants.WORLD_HEIGHT);
 			
-			if(getTop() < -500) { //TODO enemy collision
+			if(getTop() < -250) { //TODO enemy collision
 				alive = false;
 			}
 			
@@ -199,7 +201,7 @@ public class Player extends Entity {
 	private void collisions(World w) {
 		collisionGround(w);
 		
-//		collisionGround(w, tutorial); TODO after enemy collision
+//		collisionGround(w); TODO after enemy collision
 	}
 	
 	@Override
