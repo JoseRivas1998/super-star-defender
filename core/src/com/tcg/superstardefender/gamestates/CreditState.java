@@ -71,7 +71,7 @@ public class CreditState extends GameState {
 		dH = Game.res.getHeight("large", developed, dW, Align.center, true);
 		
 		dX = 10;
-		dY = (MyConstants.WORLD_HEIGHT * .75f) + (dH * .5f);
+		dY = (MyConstants.WORLD_HEIGHT * .85f) + (dH * .5f);
 		
 		jW = MyConstants.WOLRD_WIDTH - 20;
 		jH = Game.res.getHeight("main", jose, jW, Align.center, true);
@@ -82,7 +82,7 @@ public class CreditState extends GameState {
 		pW = MyConstants.WOLRD_WIDTH - 20;
 		
 		pX = 10;
-		pY = (MyConstants.WORLD_HEIGHT * .5f) + (dH * .5f);
+		pY = (MyConstants.WORLD_HEIGHT * .6f) + (dH * .5f);
 		
 		lW = MyConstants.WOLRD_WIDTH - 20;
 		lH = Game.res.getHeight("main", libgdx, lW, Align.center, true);
@@ -93,7 +93,7 @@ public class CreditState extends GameState {
 		sW = MyConstants.WOLRD_WIDTH - 20;
 		
 		sX = 10;
-		sY = (MyConstants.WORLD_HEIGHT * .25f) + (dH * .5f);
+		sY = (MyConstants.WORLD_HEIGHT * .35f) + (dH * .5f);
 		
 		nW = MyConstants.WOLRD_WIDTH - 20;
 		nH = Game.res.getHeight("main", names, nW, Align.center, true);

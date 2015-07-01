@@ -28,10 +28,18 @@ public class PlayState extends GameState {
 	
 	private int score;
 	
+	private int enemiesKilled;
+	
+	private int enemiesNeeded;
+	
+	private boolean won;
+	
 	private boolean gop;
 	
 	private float gameOverTime, gameOverTimer;
 
+	private HUD hud;
+	
 	public PlayState(GameStateManager gsm) {
 		super(gsm);
 	}
@@ -63,6 +71,13 @@ public class PlayState extends GameState {
 		gop = false;
 		
 		score = 0;
+		
+		enemiesKilled = 0;
+		enemiesNeeded = (int)(((Game.level + 1f) / 4f) * 20f);
+		
+		hud = new HUD();
+		
+		won = false;
 		
 		Game.res.getMusic("level" + Game.level).play();
 
@@ -102,6 +117,11 @@ public class PlayState extends GameState {
 				gsm.setState(States.LEVELSELECT, true);
 			}
 		}
+		
+		won = enemiesKilled >= enemiesNeeded;
+		
+		hud.update(score, enemiesKilled, enemiesNeeded);
+		
 	}
 
 	@Override
@@ -125,6 +145,8 @@ public class PlayState extends GameState {
 		sr.setProjectionMatrix(cam.combined);
 		p.drawBullets(sr, sb, dt);
 		sr.end();
+		
+		hud.draw(sb, sr, cam, p, won);
 		
 	}
 
