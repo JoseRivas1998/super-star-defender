@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -26,11 +27,19 @@ public class PlayState extends GameState {
 	
 	private Player p;
 	
+	private Array<Enemy> enemies;
+	
 	private int score;
 	
 	private int enemiesKilled;
 	
 	private int enemiesNeeded;
+	
+	private float enemyChance;
+	
+	private boolean started;
+	
+	private float startTime, startTimer;
 	
 	private boolean won;
 	
@@ -65,6 +74,8 @@ public class PlayState extends GameState {
 		
 		p = new Player();
 		
+		enemies = new Array<Enemy>();
+		
 		gameOverTime = 0;
 		gameOverTimer = 7.818f;
 		
@@ -75,9 +86,18 @@ public class PlayState extends GameState {
 		enemiesKilled = 0;
 		enemiesNeeded = (int)(((Game.level + 1f) / 4f) * 20f);
 		
+		enemyChance = enemiesNeeded / 1000f;
+		
+		System.out.println(enemyChance);
+		
 		hud = new HUD();
 		
 		won = false;
+		
+		started = false;
+		
+		startTime = 0;
+		startTimer = 2;
 		
 		Game.res.getMusic("level" + Game.level).play();
 
@@ -94,7 +114,36 @@ public class PlayState extends GameState {
 	@Override
 	public void update(float dt) {
 
-		p.update(w, cam);
+		p.update(w, cam, enemies);
+		
+		if(started) {
+			if(MathUtils.randomBoolean(enemyChance)) {
+				enemies.add(new Enemy());
+			}
+		} else {
+			startTime += dt;
+			if(startTime >= startTimer) {
+				startTime = 0;
+				started = true;
+			}
+			System.out.println(startTime);
+		}
+		
+		for(Enemy e : enemies) {
+			e.update(w, cam);
+			if(e.getY() < -500) {
+				enemies.removeValue(e, true);
+			}
+			for(Bullet b : p.getBullets()) {
+				if(e.collidingWith(b)) {
+					enemies.removeValue(e, true);
+					score += 100;
+					enemiesKilled++;
+				}
+			}
+		}
+		
+		System.out.println(enemies.size);
 		
 		for(Star s: stars) {
 			s.update(cam.viewportWidth, cam.viewportHeight);
@@ -139,6 +188,9 @@ public class PlayState extends GameState {
 		sb.begin();
 		sb.setProjectionMatrix(cam.combined);
 		p.draw(sr, sb, dt);
+		for(Enemy e : enemies) {
+			e.draw(sr, sb, dt);
+		}
 		sb.end();
 		
 		sr.begin(ShapeType.Filled);
@@ -160,6 +212,10 @@ public class PlayState extends GameState {
 		w.dispose();
 		stars.clear();
 		p.dispose();
+		for(Enemy e : enemies) {
+			e.dispose();
+		}
+		enemies.clear();
 	}
 
 }

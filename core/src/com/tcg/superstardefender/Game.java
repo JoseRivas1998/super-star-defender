@@ -101,7 +101,7 @@ public class Game extends ApplicationAdapter {
 		res.loadBitmapFont("font", "nasalization_rg.ttf", "mItems", 42, Color.WHITE);
 		res.loadBitmapFont("font", "nasalization_rg.ttf", "main", 24, Color.WHITE);
 		
-		res.setVolumeAll(.3f); //TODO shortcut to jump to this line, I change it when I'm skyping or listening to music
+		res.setVolumeAll(1f); //TODO shortcut to jump to this line, I change it when I'm skyping or listening to music
 		
 		gsm = new GameStateManager(States.SPLASH);
 		
