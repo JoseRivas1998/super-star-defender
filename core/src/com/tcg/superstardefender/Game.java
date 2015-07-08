@@ -39,7 +39,7 @@ public class Game extends ApplicationAdapter {
 	final static Save defaultSave = new Save(new int[] {0, 0, 0, 0}, 1);
 	
 	public final static String[] levelNames = new String[] {
-			"Main Hanger", "Level 2 Name", "Level 3 Name", "Level 4 Name"
+			"Main Hanger", "Storage", "Hallway", "Control Room"
 	};
 	
 	private static Save save;
@@ -101,7 +101,7 @@ public class Game extends ApplicationAdapter {
 		res.loadBitmapFont("font", "nasalization_rg.ttf", "mItems", 42, Color.WHITE);
 		res.loadBitmapFont("font", "nasalization_rg.ttf", "main", 24, Color.WHITE);
 		
-		res.setVolumeAll(1f); //TODO shortcut to jump to this line, I change it when I'm skyping or listening to music
+		res.setVolumeAll(.5f); //TODO shortcut to jump to this line, I change it when I'm skyping or listening to music
 		
 		gsm = new GameStateManager(States.SPLASH);
 		
