@@ -90,7 +90,7 @@ public class Player extends Entity {
 			}
 			if(MyInput.keyPressed(MyInput.SHOOT)) {
 				if(bullets.size < 10) {
-					//TODO play sound
+					Game.res.getSound("shoot").play(.5f);
 					bullets.add(new Bullet(dir, getPosition()));
 				}
 			}
@@ -126,7 +126,7 @@ public class Player extends Entity {
 		for(Bullet b : bullets) {
 			b.update();
 			for(Rectangle r : w.getBounds()) {
-				if(b.collidingWith(r)) {
+				if(b.collidingWith(r) || b.getDistance() >= Bullet.destroyDistance) {
 					bullets.removeValue(b, true);
 					return;
 				}

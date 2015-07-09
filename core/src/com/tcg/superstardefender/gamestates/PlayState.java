@@ -136,6 +136,7 @@ public class PlayState extends GameState {
 			}
 			for(Bullet b : p.getBullets()) {
 				if(e.collidingWith(b)) {
+					p.getBullets().removeValue(b, true);
 					enemies.removeValue(e, true);
 					score += 100;
 					enemiesKilled++;
@@ -163,6 +164,9 @@ public class PlayState extends GameState {
 			gameOverTime += dt;
 			if(gameOverTime > gameOverTimer) {
 				gameOverTime = 0;
+				if((Game.levelsUnlocked < (Game.level + 1) + 1) && won) {
+					Game.levelsUnlocked = (Game.level + 1) + 1;
+				}
 				gsm.setState(States.LEVELSELECT, true);
 			}
 		}

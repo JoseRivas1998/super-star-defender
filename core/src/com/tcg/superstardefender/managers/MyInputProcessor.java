@@ -16,7 +16,7 @@ public class MyInputProcessor extends InputAdapter {
 		if(keycode == Keys.SPACE || keycode == Keys.Z) {
 			MyInput.setKey(true, MyInput.JUMP);
 		}
-		if(keycode == Keys.X || keycode == Keys.M) {
+		if(keycode == Keys.X || keycode == Keys.CONTROL_LEFT || keycode == Keys.CONTROL_RIGHT) {
 			MyInput.setKey(true, MyInput.SHOOT);
 		}
 		if(keycode == Keys.ENTER) {
@@ -39,7 +39,7 @@ public class MyInputProcessor extends InputAdapter {
 		if(keycode == Keys.SPACE || keycode == Keys.Z) {
 			MyInput.setKey(false, MyInput.JUMP);
 		}
-		if(keycode == Keys.X || keycode == Keys.M) {
+		if(keycode == Keys.X || keycode == Keys.CONTROL_LEFT || keycode == Keys.CONTROL_RIGHT) {
 			MyInput.setKey(false, MyInput.SHOOT);
 		}
 		if(keycode == Keys.ENTER) {

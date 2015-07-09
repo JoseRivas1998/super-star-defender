@@ -89,19 +89,23 @@ public class Game extends ApplicationAdapter {
 		res.loadMusic("music", "credits.mp3", "credits", true);
 		res.loadMusic("music", "levelselect.mp3", "levelselect", true);
 		res.loadMusic("music", "gameover.mp3", "gameover", false);
-		
+
 		res.loadMusic("music", "level0.mp3", "level0", true);
+		res.loadMusic("music", "level1.mp3", "level1", true);
+		res.loadMusic("music", "level2.mp3", "level2", true);
+		res.loadMusic("music", "level3.mp3", "level3", true);
 
 		res.loadSound("sound", "buzzer.mp3", "buzzer");
 		res.loadSound("sound", "jump.mp3", "jump");
 		res.loadSound("sound", "select.mp3", "select");
+		res.loadSound("sound", "shoot.mp3", "shoot");
 		
 		res.loadBitmapFont("font", "nasalization_rg.ttf", "small", 12, Color.WHITE);
 		res.loadBitmapFont("font", "nasalization_rg.ttf", "large", 56, Color.WHITE);
 		res.loadBitmapFont("font", "nasalization_rg.ttf", "mItems", 42, Color.WHITE);
 		res.loadBitmapFont("font", "nasalization_rg.ttf", "main", 24, Color.WHITE);
 		
-		res.setVolumeAll(.5f); //TODO shortcut to jump to this line, I change it when I'm skyping or listening to music
+		res.setVolumeAll(.3f); //TODO shortcut to jump to this line, I change it when I'm skyping or listening to music
 		
 		gsm = new GameStateManager(States.SPLASH);
 		
