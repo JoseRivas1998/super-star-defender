@@ -25,6 +25,8 @@ public class PlayState extends GameState {
 	
 	private Array<Star> stars;
 	
+	private Array<Particle> part;
+	
 	private Player p;
 	
 	private Array<Enemy> enemies;
@@ -43,9 +45,15 @@ public class PlayState extends GameState {
 	
 	private boolean won;
 	
+	private boolean highScoreBeat;
+	
+	private boolean firstTime;
+	
 	private boolean gop;
 	
 	private float gameOverTime, gameOverTimer;
+	
+	private String gameOver;
 
 	private HUD hud;
 	
@@ -60,6 +68,8 @@ public class PlayState extends GameState {
 		
 		view.apply();
 		view.update((int) Game.SIZE.x, (int) Game.SIZE.y, true);
+		
+		part = new Array<Particle>();
 		
 		stars = new Array<Star>();
 		for(int i = 0; i < 500; i++) {
@@ -77,7 +87,9 @@ public class PlayState extends GameState {
 		enemies = new Array<Enemy>();
 		
 		gameOverTime = 0;
-		gameOverTimer = 7.818f;
+		gameOverTimer = 1f;
+		
+		gameOver = "";
 		
 		gop = false;
 		
@@ -88,11 +100,11 @@ public class PlayState extends GameState {
 		
 		enemyChance = enemiesNeeded / 1000f;
 		
-		System.out.println(enemyChance);
-		
 		hud = new HUD();
 		
 		won = false;
+		highScoreBeat = false;
+		firstTime = Game.highscore[Game.level] == 0;
 		
 		started = false;
 		
@@ -106,6 +118,12 @@ public class PlayState extends GameState {
 	@Override
 	public void handleInput() {
 		if(MyInput.keyPressed(MyInput.BACK)) {
+			if(gop) {
+				if((Game.levelsUnlocked < (Game.level + 1) + 1) && won) {
+					Game.levelsUnlocked = (Game.level + 1) + 1;
+					Game.levelsUnlocked = MyConstants.clamp(Game.levelsUnlocked, 0, 4);
+				}
+			}
 			gsm.setState(States.LEVELSELECT, true);
 		}
 		p.handleInput();
@@ -126,7 +144,6 @@ public class PlayState extends GameState {
 				startTime = 0;
 				started = true;
 			}
-			System.out.println(startTime);
 		}
 		
 		for(Enemy e : enemies) {
@@ -137,6 +154,8 @@ public class PlayState extends GameState {
 			for(Bullet b : p.getBullets()) {
 				if(e.collidingWith(b)) {
 					p.getBullets().removeValue(b, true);
+					Game.res.getSound("death").play(Game.VOLUME * .5f);
+					part.add(new Particle(e.getCenter(), MyConstants.randomColor(), 1));
 					enemies.removeValue(e, true);
 					score += 100;
 					enemiesKilled++;
@@ -144,20 +163,29 @@ public class PlayState extends GameState {
 			}
 		}
 		
-		System.out.println(enemies.size);
-		
 		for(Star s: stars) {
 			s.update(cam.viewportWidth, cam.viewportHeight);
 		}
 		
 		if(score > Game.highscore[Game.level]) {
+			if(!firstTime) {
+				highScoreBeat = true;
+			}
 			Game.highscore[Game.level] = score;
 		}
 		
 		if(!p.isAlive()) {
 			if(!gop) {
 				Game.res.getMusic("level" + Game.level).stop();
-				Game.res.getMusic("gameover").play();
+				if((won && firstTime) || (won && highScoreBeat)) {
+					Game.res.getMusic("victory").play();
+					gameOver = "Victory!";
+					gameOverTimer = 3.175f;
+				} else {
+					Game.res.getMusic("gameover").play();
+					gameOver = "Game Over";
+					gameOverTimer = 7.818f;
+				}
 				Gdx.input.vibrate(700);
 				gop = true;
 			} 
@@ -166,14 +194,22 @@ public class PlayState extends GameState {
 				gameOverTime = 0;
 				if((Game.levelsUnlocked < (Game.level + 1) + 1) && won) {
 					Game.levelsUnlocked = (Game.level + 1) + 1;
+					Game.levelsUnlocked = MyConstants.clamp(Game.levelsUnlocked, 0, 4);
 				}
 				gsm.setState(States.LEVELSELECT, true);
 			}
 		}
 		
+		for(Particle par : part) {
+			par.update(dt);
+			if(par.isShouldRemove()) {
+				part.removeValue(par, true);
+			}
+		}
+		
 		won = enemiesKilled >= enemiesNeeded;
 		
-		hud.update(score, enemiesKilled, enemiesNeeded);
+		hud.update(score, enemiesKilled, enemiesNeeded, gameOver);
 		
 	}
 
@@ -202,7 +238,13 @@ public class PlayState extends GameState {
 		p.drawBullets(sr, sb, dt);
 		sr.end();
 		
-		hud.draw(sb, sr, cam, p, won);
+		sb.begin();
+		for(Particle par : part) {
+			par.draw(sr, sb, dt);
+		}
+		sb.end();
+		
+		hud.draw(sb, sr, cam, p, won, highScoreBeat);
 		
 	}
 
@@ -220,6 +262,10 @@ public class PlayState extends GameState {
 			e.dispose();
 		}
 		enemies.clear();
+		for(Particle par : part) {
+			par.dispose();
+		}
+		part.clear();
 	}
 
 }

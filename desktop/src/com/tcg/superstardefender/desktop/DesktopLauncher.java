@@ -5,6 +5,8 @@ import java.awt.event.*;
 import java.net.URL;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -19,6 +21,12 @@ public class DesktopLauncher   extends JFrame implements ActionListener{
 	private JButton run, website, sixteenNineRes;
 	
 	private JCheckBox fullScreenB, vSyncB;
+	
+	private JSlider volumeSlide;
+	
+	private JTextField vText;
+	
+	private float volume;
 	
 	private boolean fullScreen, vSync;
 	
@@ -41,6 +49,21 @@ public class DesktopLauncher   extends JFrame implements ActionListener{
 
 		widthField = new JTextField("" + MyConstants.WOLRD_WIDTH, 5);
 		heightField = new JTextField("" + MyConstants.WORLD_HEIGHT, 5);
+		
+		volumeSlide = new JSlider(JSlider.HORIZONTAL, 0, 100, 100);
+		vText = new JTextField(volumeSlide.getValue() + "%");
+		vText.setEditable(false);
+		
+		
+		volumeSlide.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				vText.setText(volumeSlide.getValue() + "%");
+				
+			}
+			
+		});
 		
 		run = new JButton("Run");
 		run.addActionListener(this);
@@ -65,9 +88,16 @@ public class DesktopLauncher   extends JFrame implements ActionListener{
 	    screenSettings.add(fullScreenB);
 	    screenSettings.add(vSyncB);
 	    
+	    JPanel audioSettings = new JPanel();
+	    audioSettings.setLayout(new FlowLayout());
+	    audioSettings.add(new JLabel("Volume"));
+	    audioSettings.add(volumeSlide);
+	    audioSettings.add(vText);
+	    
 	    JPanel settings = new JPanel();
 	    settings.setLayout(new BorderLayout());
 	    settings.add(screenSettings, BorderLayout.NORTH);
+	    settings.add(audioSettings, BorderLayout.SOUTH);
 	    
 	    JPanel buttons = new JPanel();
 	    buttons.setLayout(new FlowLayout());
@@ -78,7 +108,7 @@ public class DesktopLauncher   extends JFrame implements ActionListener{
 	    getContentPane().add(settings, BorderLayout.CENTER);
 	    getContentPane().add(buttons, BorderLayout.SOUTH);
 	    
-	    setSize(450, 125);
+	    setSize(450, 150);
 	    setTitle("Tiny Country Games Launcher");
 	    setLocationRelativeTo(null);
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -95,7 +125,10 @@ public class DesktopLauncher   extends JFrame implements ActionListener{
 		fullScreenB.setToolTipText("Check if you want to run game in fullscreen");
 		vSyncB.setToolTipText("Check if you want to enable vSync");
 		sixteenNineRes.setToolTipText("Make the game aspect ratio 16:9 based on width");
-	    
+		
+		vText.setToolTipText("The volume the game will run at");
+		volumeSlide.setToolTipText("Slide to change the volume of the game");
+		
 	    setIconImage(img.getImage());
 	    setVisible(true);
 	}
@@ -149,7 +182,10 @@ public class DesktopLauncher   extends JFrame implements ActionListener{
 			config.addIcon("desktopicons/win.png", FileType.Internal);
 			config.addIcon("desktopicons/lin.png", FileType.Internal);
 			config.addIcon("desktopicons/mac.png", FileType.Internal);
-			new LwjglApplication(new Game(), config);
+			volume = volumeSlide.getValue() / 100f;
+			Game g = new Game(new DesktopSQLManager());
+			Game.VOLUME = volume;
+			new LwjglApplication(g, config);
 		}
 		if(e.getSource() == sixteenNineRes) {
 			int tw = new Integer(widthField.getText().trim()).intValue();

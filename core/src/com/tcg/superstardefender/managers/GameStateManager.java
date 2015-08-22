@@ -119,8 +119,8 @@ public class GameStateManager {
 		jumpSt.height = Game.res.getHeight("small", "Jump", 0, Align.bottomLeft, false);
 		startSt.height = Game.res.getHeight("small", "Start", 0, Align.bottomLeft, false);
 		
-		left.height = 50;
-		right.height = 50;
+		left.height = 75;
+		right.height = 75;
 		shoot.height = 75;
 		jump.height = 75;
 		start.height = 50;
@@ -149,7 +149,7 @@ public class GameStateManager {
 		rightSt.x = (right.x + (right.width * .5f)) - (rightSt.width * .5f);
 		rightSt.y = (right.y + (right.height * .5f)) + (rightSt.height * .5f);
 		
-		right.x = 10 + left.width + 5;
+		right.x = 10 + left.width + 10;
 		right.y = 10;
 
 		leftSt.x = (left.x + (left.width * .5f)) - (leftSt.width * .5f);

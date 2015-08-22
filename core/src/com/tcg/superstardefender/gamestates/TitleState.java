@@ -1,6 +1,7 @@
 package com.tcg.superstardefender.gamestates;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -37,6 +38,9 @@ public class TitleState extends GameState {
 	private String jose;
 	
 	private float jX, jY, jH;
+	
+	private String li;
+	private float liX, liY;
 
 	public TitleState(GameStateManager gsm) {
 		super(gsm);
@@ -69,11 +73,11 @@ public class TitleState extends GameState {
 		}
 		if(MyInput.keyPressed(MyInput.LEFT)) {
 			currentItem--;
-			Game.res.getSound("select").play(.5f);
+			Game.res.getSound("select").play(Game.VOLUME * .5f);
 		}
 		if(MyInput.keyPressed(MyInput.RIGHT)) {
 			currentItem++;
-			Game.res.getSound("select").play(.5f);
+			Game.res.getSound("select").play(Game.VOLUME * .5f);
 		}
 		if(MyInput.keyPressed(MyInput.START) || MyInput.keyPressed(MyInput.JUMP)) {
 			select();
@@ -88,15 +92,28 @@ public class TitleState extends GameState {
 			gsm.setState(States.CREDITS, true);
 		}
 		if(currentItem == 2) {
+			logIn();
+		}
+		if(currentItem == 3) {
+			Game.resetDefaultSave();
+			Game.res.getSound("death").play(Game.VOLUME * .5f);
+		}
+		if(currentItem == 4) {
 			Gdx.app.exit();
 		}
 	}
 
 	private void setValues() {
 		
-		currentItem = MyConstants.clamp(currentItem, 0, 2);
+		currentItem = MyConstants.clamp(currentItem, 0, 4);
 		
 		jose = "Created by Jose Rodriguez-Rivas";
+		
+		if(Game.LOGGED_IN) {
+			li = "Logged in as " + Game.username;
+		} else {
+			li = "Not logged in";
+		}
 		
 		titleW = cam.viewportWidth - 20;
 		titleH = Game.res.getHeight("large", Game.TITLE, cam.viewportWidth - 20, Align.center, true);
@@ -113,6 +130,12 @@ public class TitleState extends GameState {
 			currentOption = "Credits";
 		}
 		if(currentItem == 2) {
+			currentOption = "Log into TCG Account";
+		}
+		if(currentItem == 3) {
+			currentOption = "Reset Save Data";
+		}
+		if(currentItem == 4) {
 			currentOption = "Quit";
 		}
 		
@@ -126,6 +149,9 @@ public class TitleState extends GameState {
 		jH = Game.res.getHeight("small", jose, 0, Align.bottomLeft, false);
 		jX = 10;
 		jY = jH + 10;
+		
+		liX = 10;
+		liY = MyConstants.WORLD_HEIGHT - 10;
 		
 		nH = Game.res.getHeight("small", Game.NEWS, 0, Align.bottomRight, false);
 		nW = Game.res.getWidth("small", Game.NEWS, 0, Align.bottomRight, false);
@@ -163,7 +189,7 @@ public class TitleState extends GameState {
 		if(currentItem > 0) {
 			sr.triangle(bgx - 30, bgy + (bgh * .5f), bgx - 5, bgy + (bgh * .75f), bgx - 5, bgy + (bgh * .25f));
 		}
-		if(currentItem < 2) {
+		if(currentItem < 4) {
 			sr.triangle(bgx + bgw + 30, bgy + (bgh * .5f), bgx + bgw + 5, bgy + (bgh * .75f), bgx + bgw + 5, bgy + (bgh * .25f));
 		}
 		sr.end();
@@ -176,8 +202,46 @@ public class TitleState extends GameState {
 		Game.res.getFont("mItems").draw(sb, currentOption, currentOptionX, currentOptionY, currentOptionW, Align.center, true);
 		Game.res.getFont("small").draw(sb, Game.NEWS, nX, nY, 0, Align.bottomLeft, false);
 		Game.res.getFont("small").draw(sb, jose, jX, jY, 0, Align.bottomLeft, false);
+		Game.res.getFont("small").draw(sb, li, liX, liY, 0, Align.bottomLeft, false);
 		sb.end();
 
+	}
+	
+	private void logIn() {
+		Game.LOGGED_IN = false;
+		Gdx.input.getTextInput(new TextInputListener() {
+			
+			@Override
+			public void input(String text) {
+				Game.username = text;
+				System.out.println(Game.username);
+				Gdx.input.getTextInput(new TextInputListener() {
+					
+					@Override
+					public void input(String text) {
+						Game.password = text;
+						System.out.println(Game.password);
+						Game.LOGGED_IN = Game.DBM.login(Game.username, Game.password);
+						System.out.println(Game.LOGGED_IN);
+						System.out.println(Game.USER_ID);
+					}
+
+					@Override
+					public void canceled() {
+						Game.password = "user not logged in";
+						Game.LOGGED_IN = false;
+					}
+					
+				}, "Password", "", "Enter your Password");
+			}
+
+			@Override
+			public void canceled() {
+				Game.username = "user not logged in";
+				Game.LOGGED_IN = false;
+			}
+			
+		}, "Username", "", "Enter your Username");
 	}
 
 	@Override

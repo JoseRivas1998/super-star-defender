@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.Scanner;
 
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -14,6 +15,8 @@ import com.tcg.superstardefender.managers.*;
 
 public class Game extends ApplicationAdapter {
 	
+	public static DatabaseManager DBM;
+	
 	public static final String TITLE = "Super Star Defender";
 
 	private static int frames;
@@ -23,6 +26,8 @@ public class Game extends ApplicationAdapter {
 	public static boolean ANDROID;
 	
 	public static Vector2 SIZE, CENTER;
+	
+	public static float VOLUME;
 	
 	public static Content res;
 	
@@ -36,6 +41,12 @@ public class Game extends ApplicationAdapter {
 	
 	public static int levelsUnlocked;
 	
+	public static boolean LOGGED_IN;
+	
+	public static String username, password;
+	
+	public static int USER_ID;
+	
 	final static Save defaultSave = new Save(new int[] {0, 0, 0, 0}, 1);
 	
 	public final static String[] levelNames = new String[] {
@@ -44,13 +55,16 @@ public class Game extends ApplicationAdapter {
 	
 	private static Save save;
 	
-	public Game() {
+	public Game(DatabaseManager db) {
 		System.out.println("constructor");
+		Game.DBM = db;
 	}
 	
 	@Override
 	public void create () {
 		System.out.println("create");
+		
+		Game.LOGGED_IN = false;
 		
 		Game.load();
 		
@@ -89,6 +103,7 @@ public class Game extends ApplicationAdapter {
 		res.loadMusic("music", "credits.mp3", "credits", true);
 		res.loadMusic("music", "levelselect.mp3", "levelselect", true);
 		res.loadMusic("music", "gameover.mp3", "gameover", false);
+		res.loadMusic("music", "victory.mp3", "victory", false);
 
 		res.loadMusic("music", "level0.mp3", "level0", true);
 		res.loadMusic("music", "level1.mp3", "level1", true);
@@ -99,18 +114,24 @@ public class Game extends ApplicationAdapter {
 		res.loadSound("sound", "jump.mp3", "jump");
 		res.loadSound("sound", "select.mp3", "select");
 		res.loadSound("sound", "shoot.mp3", "shoot");
+		res.loadSound("sound", "death.mp3", "death");
 		
 		res.loadBitmapFont("font", "nasalization_rg.ttf", "small", 12, Color.WHITE);
 		res.loadBitmapFont("font", "nasalization_rg.ttf", "large", 56, Color.WHITE);
 		res.loadBitmapFont("font", "nasalization_rg.ttf", "mItems", 42, Color.WHITE);
 		res.loadBitmapFont("font", "nasalization_rg.ttf", "main", 24, Color.WHITE);
 		
-		res.setVolumeAll(.3f); //TODO shortcut to jump to this line, I change it when I'm skyping or listening to music
+		if(Game.ANDROID) Game.VOLUME = 1f;
+		
+		res.setVolumeAll(Game.VOLUME); 
 		
 		gsm = new GameStateManager(States.SPLASH);
 		
 		Gdx.input.setInputProcessor(new MyInputProcessor());
 		Gdx.input.setCatchBackKey(true);
+		Gdx.input.setCursorCatched(Gdx.graphics.isFullscreen());
+		Controllers.addListener(new MyControllerProcessor());
+		
 	}
 
 	@Override
@@ -168,13 +189,17 @@ public class Game extends ApplicationAdapter {
 				e.printStackTrace();
 			}
 		} else {
-			save = new Save(defaultSave);
-			Game.highscore = save.getHighscore();
-			Game.levelsUnlocked = save.getNumLevelsUnlocked();
-			Game.save();
+			resetDefaultSave();
 		}
 		Game.highscore = save.getHighscore();
 		Game.levelsUnlocked = save.getNumLevelsUnlocked();
+	}
+	
+	public static void resetDefaultSave() {
+		save = new Save(defaultSave);
+		Game.highscore = save.getHighscore();
+		Game.levelsUnlocked = save.getNumLevelsUnlocked();
+		Game.save();
 	}
 	
 	public static void save() {

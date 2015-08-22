@@ -84,13 +84,13 @@ public class Player extends Entity {
 			if(touchingG) {
 				vel.y = 0;
 				if(MyInput.keyPressed(MyInput.JUMP)) {
-					Game.res.getSound("jump").play(.5f);
+					Game.res.getSound("jump").play(Game.VOLUME * .5f);
 					vel.y = 17.5f;
 				}
 			}
 			if(MyInput.keyPressed(MyInput.SHOOT)) {
 				if(bullets.size < 10) {
-					Game.res.getSound("shoot").play(.5f);
+					Game.res.getSound("shoot").play(Game.VOLUME * .5f);
 					bullets.add(new Bullet(dir, getPosition()));
 				}
 			}

@@ -104,13 +104,13 @@ public class LevelSelectState extends GameState {
 	public void handleInput() {
 		if(MyInput.keyPressed(MyInput.LEFT)) {
 			Game.level--;
-			Game.res.getSound("select").play(.5f);
+			Game.res.getSound("select").play(Game.VOLUME * .5f);
 		}
 		if(MyInput.keyPressed(MyInput.RIGHT)) {
 			Game.level++;
-			Game.res.getSound("select").play(.5f);
+			Game.res.getSound("select").play(Game.VOLUME * .5f);
 		}
-		if(MyInput.keyPressed(MyInput.BACK)) {
+		if(MyInput.keyPressed(MyInput.BACK) || MyInput.keyPressed(MyInput.SHOOT)) {
 			gsm.setState(States.TITLE, true);
 		}
 		if(MyInput.keyPressed(MyInput.START) || MyInput.keyPressed(MyInput.JUMP)) {
@@ -120,7 +120,7 @@ public class LevelSelectState extends GameState {
 
 	private void select() {
 		if(levelLocked) {
-			Game.res.getSound("buzzer").play(.5f);
+			Game.res.getSound("buzzer").play(Game.VOLUME * .5f);
 		} else {
 			gsm.setState(States.PLAY, true);
 		}

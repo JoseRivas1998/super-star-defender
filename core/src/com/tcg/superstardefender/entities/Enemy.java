@@ -21,19 +21,21 @@ public class Enemy extends Entity {
 	private int dir;
 	
 	private Texture wltemp, wrtemp, irtemp, iltemp;
-
-	private boolean started;
 	
 	public Enemy() {
 		super();
-		setPosition(384, 450);
+		setPosition(MathUtils.random(32, 736), 450);
 		ls = new Rectangle();
 		rs = new Rectangle();
 		ts = new Rectangle();
 		bs = new Rectangle();
 		dir = MyConstants.RIGHT;
 		initializeAnimations();
-		started = false;
+		if(MathUtils.randomBoolean()) {
+			vel.x = 2;
+		} else {
+			vel.x = -2;
+		}
 	}
 	
 	private void initializeAnimations() {
@@ -112,14 +114,6 @@ public class Enemy extends Entity {
 			if(bs.overlaps(r)) {
 				bounds.y = r.y + r.height - 8;
 				touchingG = true;
-				if(!started) {
-					if(MathUtils.randomBoolean()) {
-						vel.x = 2;
-					} else {
-						vel.x = -2;
-					}
-					started = true;
-				}
 				break;
 			} else {
 				touchingG = false;
