@@ -18,7 +18,7 @@ public class DesktopLauncher   extends JFrame implements ActionListener{
 
 	private JTextField widthField, heightField;
 	
-	private JButton run, website, sixteenNineRes;
+	private JButton run, website, sixteenNineRes, license;
 	
 	private JCheckBox fullScreenB, vSyncB;
 	
@@ -70,6 +70,9 @@ public class DesktopLauncher   extends JFrame implements ActionListener{
 
 		website = new JButton("Visit our website!");
 		website.addActionListener(this);
+
+		license = new JButton("Licenses");
+		license.addActionListener(this);
 		
 		sixteenNineRes = new JButton("16:9");
 		sixteenNineRes.addActionListener(this);
@@ -103,6 +106,7 @@ public class DesktopLauncher   extends JFrame implements ActionListener{
 	    buttons.setLayout(new FlowLayout());
 	    buttons.add(run);
 	    buttons.add(website);
+	    buttons.add(license);
 	    
 	    getContentPane().add(title, BorderLayout.NORTH);
 	    getContentPane().add(settings, BorderLayout.CENTER);
@@ -193,6 +197,8 @@ public class DesktopLauncher   extends JFrame implements ActionListener{
 			widthField.setText("" + tw);
 			heightField.setText("" + th);
 		}
-		
+		if(e.getSource() == license) {
+			new License();
+		}
 	}
 }

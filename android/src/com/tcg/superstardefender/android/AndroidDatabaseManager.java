@@ -53,6 +53,7 @@ public class AndroidDatabaseManager implements DatabaseManager {
 			JSONArray jObject = new JSONArray(result);
 			
 			if(jObject.length() == 0) {
+				System.out.println("test1");
 				return false;
 			} else {
 				System.out.println("test");
